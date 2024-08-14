@@ -1,0 +1,40 @@
+# networks
+networks:
+  spring_network:
+    name: spring_network
+    driver: bridge
+
+# services
+services:
+  db:
+    image: postgres:15.2
+    container_name: bookdb
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: bookdb
+    volumes:
+      - ./postgresdb:/var/lib/postgresql/data
+    ports:
+      - "6432:5432"
+    networks:
+      - spring_network
+  api:
+    build: .
+    container_name: bookapi
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bookdb
+    ports:
+      - "8090:8090"
+    depends_on:
+      - db
+    networks:
+      - spring_network
+  
+volumes:
+  postgresdb:
+    driver: local
