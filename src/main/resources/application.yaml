@@ -2,9 +2,9 @@
 #   port: 8090
 spring:
   # sql.init.mode means to run the predefined script when start app or not
-  sql:
-    init:
-      mode: ALWAYS 
+  # sql:
+  #   init:
+  #     mode: ALWAYS 
   application:
     name: spring-boot-docker
   jpa:
