@@ -1,0 +1,12 @@
+server:
+  port: 8090
+
+spring:
+  config:
+    activate:
+      on-profile: staging
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://stagingdb:5432/bookdb}
+    ## in case different credentials
+    # username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    # password: ${SPRING_DATASOURCE_PASSWORD:123456}

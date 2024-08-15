@@ -1,0 +1,57 @@
+# networks
+networks:
+  ## multi profile: network name must be different for each profile
+  spring_staging_network:
+    name: spring_staging_network
+    driver: bridge
+
+# services
+services:
+  # multi profile: service name must be different for each profile
+  stagingdb:
+    image: postgres:15.2
+    ## multi profile: container name must be different for each profile
+    container_name: bookdb_staging
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: bookdb
+    volumes:
+      ## multi profile: volume folder must be different for each profile
+      - ./pgstagingdb:/var/lib/postgresql/data
+    ports:
+      ## multi profile: port must be different for each profile
+      - "7432:5432"
+    networks:
+      ## multi profile: change accordingly for each profile
+      - spring_staging_network
+  # multi profile: service name must be different for each profile
+  stagingapi:
+    image: "bookapi_api_staging"
+    ## multi profile: build from dockerfile must be updated for each profile
+    build:
+      context: .
+      dockerfile: Dockerfile-staging
+    ## multi profile: container name must be different for each profile
+    container_name: bookapi_staging
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
+      # - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bookdb
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    ports:
+      ## multi profile: port must be different for each profile
+      - "8090:8090"
+    depends_on:
+      ## multi profile: change accordingly for each profile
+      - stagingdb
+    networks:
+      ## multi profile: change accordingly for each profile
+      - spring_staging_network
+  
+volumes:
+  # multi profile: volume name must change accordingly (based on volume settings in services)
+  pgstagingdb:
+    driver: local

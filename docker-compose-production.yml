@@ -1,0 +1,58 @@
+# networks
+networks:
+  ## multi profile: network name must be different for each profile
+  spring_production_network:
+    name: spring_production_network
+    driver: bridge
+
+# services
+services:
+  # multi profile: service name must be different for each profile
+  productiondb:
+    image: postgres:15.2
+    ## multi profile: container name must be different for each profile
+    container_name: bookdb_production
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: bookdb
+    volumes:
+      ## multi profile: volume folder must be different for each profile
+      - ./pgproductiondb:/var/lib/postgresql/data
+    ports:
+      ## multi profile: port must be different for each profile
+      - "8432:5432"
+    networks:
+      ## multi profile: change accordingly for each profile
+      - spring_production_network
+  # multi profile: service name must be different for each profile
+  productionapi:
+    ## multi profile: image name must be different for each profile
+    image: "bookapi_api_production"
+    ## multi profile: build from dockerfile must be updated for each profile
+    build:
+      context: .
+      dockerfile: Dockerfile-productionuction
+    ## multi profile: container name must be different for each profile
+    container_name: bookapi_production
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
+      # - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bookdb
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    ports:
+      ## multi profile: port must be different for each profile
+      - "9090:9090"
+    depends_on:
+      ## multi profile: change accordingly for each profile
+      - productiondb
+    networks:
+      ## multi profile: change accordingly for each profile
+      - spring_production_network
+  
+volumes:
+  # multi profile: volume name must change accordingly (based on volume settings in services)
+  pgproductiondb:
+    driver: local
