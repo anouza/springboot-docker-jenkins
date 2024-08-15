@@ -33,7 +33,7 @@ services:
     ## multi profile: build from dockerfile must be updated for each profile
     build:
       context: .
-      dockerfile: Dockerfile-productionuction
+      dockerfile: Dockerfile-production
     ## multi profile: container name must be different for each profile
     container_name: bookapi_production
     restart: always
