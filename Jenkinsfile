@@ -5,7 +5,7 @@ pipeline {
         MAVEN_ARGS=" -e clean install"
         dockerContainerName="bookapi_${params.ENV}"
         dockerImageName="bookapi_api_${params.ENV}"
-        SPRING_PROFILES_ACTIVE=${params.ENV}
+        SPRING_PROFILES_ACTIVE="${params.ENV}"
     }
 
     parameters {
