@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // default value
-                    if(${!params.ENV}) params.ENV = 'staging'
+                    if(!params.ENV) params.ENV = 'staging'
                 }
             }
         }
